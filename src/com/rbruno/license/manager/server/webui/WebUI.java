@@ -9,18 +9,24 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.rbruno.license.manager.server.logger.Logger;
+import com.rbruno.license.manager.server.webui.page.Page;
+import com.rbruno.license.manager.server.webui.page.PageManager;
 
 public class WebUI implements Runnable {
 
 	private int port;
 	private ServerSocket socket;
 	private Thread run;
+	
+	private PageManager pageManager;
 
 	public WebUI(int port) throws IOException {
 		this.port = port;
 
 		socket = new ServerSocket(port);
 		Logger.log("Started webUI on port: " + port);
+		
+		pageManager = new PageManager(this);
 
 		run = new Thread(this, "WebServer");
 		run.start();
@@ -31,7 +37,7 @@ public class WebUI implements Runnable {
 			try {
 				Socket clientSocket = socket.accept();
 
-				Logger.log("Web Socket created " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
+				//Logger.log("Web Socket created " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
 				Thread client = new Thread(new WebClient(clientSocket, this), "WebClient");
 				client.start();
 			} catch (IOException e) {
@@ -50,30 +56,34 @@ public class WebUI implements Runnable {
 				response.sendFile(new File("www/index.html"));
 				return;
 			} catch (FileNotFoundException e) {
-				response.addToHeader("HTTP/1.1 404 UNFOUND");
-				response.addToBody("<head>\n<title>404 NOT FOUND</title>\n</head>");
-				response.send();
+				response.setResponse("HTTP/1.1 404 UNFOUND");
+				response.sendFile(new File("www/404.html"));
 				return;
 			} catch (IOException e) {
-				response.addToHeader("HTTP/1.1 404 UNFOUND");
-				response.addToBody("<head>\n<title>404 NOT FOUND</title>\n</head>");
-				response.send();
+				response.setResponse("HTTP/1.1 404 UNFOUND");
+				response.sendFile(new File("www/404.html"));
 				return;
 			}
 		}
+		
+		for (Page page : this.getPageManager().pages) {
+			if (page.getName().equals(request.getPage())) {
+				page.called(request, response);
+				return;
+			}
+		}
+		
 		try {
 			response.setContentType(getContentType(request.getPage()));
 			response.sendFile(new File("www/" + request.getPage()));
 			return;
 		} catch (FileNotFoundException e) {
-			response.addToHeader("HTTP/1.1 404 UNFOUND");
-			response.addToBody("<head>\n<title>404 NOT FOUND</title>\n</head>");
-			response.send();
+			response.setResponse("HTTP/1.1 404 UNFOUND");
+			response.sendFile(new File("www/404.html"));
 			return;
 		} catch (IOException e) {
-			response.addToHeader("HTTP/1.1 404 UNFOUND");
-			response.addToBody("<head>\n<title>404 NOT FOUND</title>\n</head>");
-			response.send();
+			response.setResponse("HTTP/1.1 404 UNFOUND");
+			response.sendFile(new File("www/404.html"));
 			return;
 		}		
 	}
@@ -136,6 +146,10 @@ public class WebUI implements Runnable {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public PageManager getPageManager() {
+		return pageManager;
 	}
 
 }

@@ -46,8 +46,6 @@ public class Request {
 		return header;
 	}
 
-
-
 	public String getPage() {
 		return page;
 	}
