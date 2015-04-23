@@ -18,7 +18,7 @@ public class WebUI implements Runnable {
 	private ServerSocket socket;
 	private Thread run;
 	
-	private PageManager pageManager;
+
 
 	public WebUI(int port) throws IOException {
 		this.port = port;
@@ -26,8 +26,6 @@ public class WebUI implements Runnable {
 		socket = new ServerSocket(port);
 		Logger.log("Started webUI on port: " + port);
 		
-		pageManager = new PageManager(this);
-
 		run = new Thread(this, "WebServer");
 		run.start();
 	}
@@ -48,7 +46,16 @@ public class WebUI implements Runnable {
 
 	public void process(Socket clientSocket, Request request) throws IOException {
 		
+		PageManager pageManager = new PageManager(this);
+		
 		Response response = new Response(clientSocket);
+		
+		for (Page page : pageManager.pages) {
+			if (page.getName().equals(request.getPage())) {
+				page.called(request, response);
+				return;
+			}
+		}
 		
 		if (request.getPage().equals("/")){
 			try {
@@ -62,13 +69,6 @@ public class WebUI implements Runnable {
 			} catch (IOException e) {
 				response.setResponse("HTTP/1.1 404 UNFOUND");
 				response.sendFile(new File("www/404.html"));
-				return;
-			}
-		}
-		
-		for (Page page : this.getPageManager().pages) {
-			if (page.getName().equals(request.getPage())) {
-				page.called(request, response);
 				return;
 			}
 		}
@@ -147,9 +147,4 @@ public class WebUI implements Runnable {
 		}
 		
 	}
-
-	public PageManager getPageManager() {
-		return pageManager;
-	}
-
 }

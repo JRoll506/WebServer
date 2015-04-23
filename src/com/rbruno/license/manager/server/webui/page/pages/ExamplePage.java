@@ -7,15 +7,15 @@ import com.rbruno.license.manager.server.webui.Response;
 import com.rbruno.license.manager.server.webui.WebUI;
 import com.rbruno.license.manager.server.webui.page.Page;
 
-public class IntractivePage extends Page {
+public class ExamplePage extends Page {
 
-	public IntractivePage(WebUI WebUi) {
-		super("/info", WebUi);
+	public ExamplePage(WebUI WebUi) {
+		super("/example", WebUi);
 	}
 
 	public void called(Request request, Response response) throws IOException {
 		response.setContentType("text/html");
-		response.addToBody("<h3>" + response.getSocket().getInetAddress().getHostAddress() + "</h3>");
+		response.addToBody("<h3>" + response.getSocket().getInetAddress().getHostAddress() + ":" +  response.getSocket().getPort() + "</h3>");
 		response.send();
 	}
 	
