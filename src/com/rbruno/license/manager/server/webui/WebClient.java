@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 public class WebClient implements Runnable {
 
-	private WebUI webUI;
+	private Server webUI;
 
 	private Socket clientSocket;
 	private BufferedReader in;
 	private PrintWriter out;
 
-	public WebClient(Socket clientSocket, WebUI webUI) throws IOException {
+	public WebClient(Socket clientSocket, Server webUI) throws IOException {
 		this.webUI = webUI;
 		this.clientSocket = clientSocket;
 		in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

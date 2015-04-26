@@ -2,14 +2,17 @@ package com.rbruno.license.manager.server.webui.page;
 
 import java.util.ArrayList;
 
-import com.rbruno.license.manager.server.webui.WebUI;
+import com.rbruno.license.manager.server.webui.Server;
 import com.rbruno.license.manager.server.webui.page.pages.ExamplePage;
 
 public class PageManager {
 
 	public ArrayList<Page> pages = new ArrayList<Page>();
 
-	public PageManager(WebUI webUI) {
-		this.pages.add(new ExamplePage(webUI));
+	public PageManager(Server server) {
+		for (Page page : server.getPages()) {
+			this.pages.add(page);
+		}
+		this.pages.add(new ExamplePage(server));
 	}
 }

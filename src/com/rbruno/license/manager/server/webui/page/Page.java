@@ -9,17 +9,17 @@ import java.util.HashMap;
 
 import com.rbruno.license.manager.server.webui.Request;
 import com.rbruno.license.manager.server.webui.Response;
-import com.rbruno.license.manager.server.webui.WebUI;
+import com.rbruno.license.manager.server.webui.Server;
 
 public class Page {
 
 	private String name;
-	private WebUI webUi;
+	private Server server;
 	private String file;
 
-	public Page(String name, WebUI WebUi) {
+	public Page(String name, Server server) {
 		this.name = name;
-		this.webUi = WebUi;
+		this.server = server;
 	}
 
 	public void called(Request request, Response response) throws IOException {
@@ -51,8 +51,8 @@ public class Page {
 		return map;
 	}
 
-	public WebUI getWebUi() {
-		return webUi;
+	public Server getServer() {
+		return server;
 	}
 
 	public String getName() {
