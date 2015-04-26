@@ -19,8 +19,6 @@ public class Server implements Runnable {
 	private ServerSocket socket;
 	private Thread run;
 	
-	private ArrayList<Page> pages = new ArrayList<Page>();
-
 	public Server(int port) throws IOException {
 		this.port = port;
 
@@ -147,13 +145,5 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	/*public void addPage(Page page){
-		pages.add(page);
-	}*/
-
-	public ArrayList<Page> getPages() {
-		return pages;
 	}
 }

@@ -10,9 +10,6 @@ public class PageManager {
 	public ArrayList<Page> pages = new ArrayList<Page>();
 
 	public PageManager(Server server) {
-		for (Page page : server.getPages()) {
-			this.pages.add(page);
-		}
 		this.pages.add(new ExamplePage(server));
 	}
 }
