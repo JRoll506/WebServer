@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.json.JSONException;
+
 import com.rbruno.license.manager.server.logger.Logger;
+import com.rbruno.license.manager.server.webui.config.Config;
 import com.rbruno.license.manager.server.webui.page.Page;
 import com.rbruno.license.manager.server.webui.page.PageManager;
 
@@ -19,9 +22,11 @@ public class Server implements Runnable {
 	private ServerSocket socket;
 	private Thread run;
 	
-	public Server(int port) throws IOException {
-		this.port = port;
-
+	private Config config;
+	
+	public Server(String config) throws IOException, JSONException {
+		this.config = new Config(config);
+		this.port = this.config.getPort();
 		socket = new ServerSocket(port);
 		Logger.log("Started webUI on port: " + port);
 		
@@ -140,8 +145,8 @@ public class Server implements Runnable {
 	
 	public static void main(String[] args){
 		try {
-			server = new Server(1309);
-		} catch (IOException e) {
+			server = new Server("config.txt");
+		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
 		
