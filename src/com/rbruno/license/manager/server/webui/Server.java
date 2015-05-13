@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import com.rbruno.license.manager.server.logger.Logger;
 import com.rbruno.license.manager.server.webui.page.Page;
@@ -15,6 +14,7 @@ import com.rbruno.license.manager.server.webui.page.PageManager;
 
 public class Server implements Runnable {
 
+	private static Server server;
 	private int port;
 	private ServerSocket socket;
 	private Thread run;
@@ -45,7 +45,7 @@ public class Server implements Runnable {
 
 	public void process(Socket clientSocket, Request request) throws IOException {
 		
-		PageManager pageManager = new PageManager(this);
+		PageManager pageManager = new PageManager();
 		
 		Response response = new Response(clientSocket);
 		
@@ -63,11 +63,11 @@ public class Server implements Runnable {
 				return;
 			} catch (FileNotFoundException e) {
 				response.setResponse("HTTP/1.1 404 UNFOUND");
-				response.sendFile(new File("www/404.html"));
+				response.sendFile(new File("404.html"));
 				return;
 			} catch (IOException e) {
 				response.setResponse("HTTP/1.1 404 UNFOUND");
-				response.sendFile(new File("www/404.html"));
+				response.sendFile(new File("404.html"));
 				return;
 			}
 		}
@@ -78,11 +78,11 @@ public class Server implements Runnable {
 			return;
 		} catch (FileNotFoundException e) {
 			response.setResponse("HTTP/1.1 404 UNFOUND");
-			response.sendFile(new File("www/404.html"));
+			response.sendFile(new File("404.html"));
 			return;
 		} catch (IOException e) {
 			response.setResponse("HTTP/1.1 404 UNFOUND");
-			response.sendFile(new File("www/404.html"));
+			response.sendFile(new File("404.html"));
 			return;
 		}		
 	}
@@ -140,10 +140,14 @@ public class Server implements Runnable {
 	
 	public static void main(String[] args){
 		try {
-			new Server(1309);
+			server = new Server(1309);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public static Server getServer() {
+		return server;
 	}
 }

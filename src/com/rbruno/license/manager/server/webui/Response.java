@@ -31,6 +31,7 @@ public class Response {
 			out.println(line);
 		}
 		out.println("Content-type: " + contentType);
+		out.println("Content-length: " + file.length());
 		out.println();
 		Files.copy(file.toPath(), outputStream);
 		outputStream.flush();
@@ -44,6 +45,7 @@ public class Response {
 			out.println(line);
 		}
 		out.println("Content-type: " + contentType);
+		out.println("Content-length: " + body.length());
 		out.println();
 		out.print(body);
 		out.flush();

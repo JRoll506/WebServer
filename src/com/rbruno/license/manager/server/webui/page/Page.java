@@ -14,12 +14,10 @@ import com.rbruno.license.manager.server.webui.Server;
 public class Page {
 
 	private String name;
-	private Server server;
 	private String file;
 
-	public Page(String name, Server server) {
+	public Page(String name) {
 		this.name = name;
-		this.server = server;
 	}
 
 	public void called(Request request, Response response) throws IOException {
@@ -52,7 +50,7 @@ public class Page {
 	}
 
 	public Server getServer() {
-		return server;
+		return Server.getServer();
 	}
 
 	public String getName() {
