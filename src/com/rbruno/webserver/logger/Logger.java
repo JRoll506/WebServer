@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.logger;
+package com.rbruno.webserver.logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

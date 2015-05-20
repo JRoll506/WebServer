@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.webui.page;
+package com.rbruno.webserver.page;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,9 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.rbruno.license.manager.server.webui.Request;
-import com.rbruno.license.manager.server.webui.Response;
-import com.rbruno.license.manager.server.webui.Server;
+import com.rbruno.webserver.Request;
+import com.rbruno.webserver.Response;
+import com.rbruno.webserver.Server;
 
 public class Page {
 

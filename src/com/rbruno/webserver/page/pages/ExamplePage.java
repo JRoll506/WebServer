@@ -1,10 +1,10 @@
-package com.rbruno.license.manager.server.webui.page.pages;
+package com.rbruno.webserver.page.pages;
 
 import java.io.IOException;
 
-import com.rbruno.license.manager.server.webui.Request;
-import com.rbruno.license.manager.server.webui.Response;
-import com.rbruno.license.manager.server.webui.page.Page;
+import com.rbruno.webserver.Request;
+import com.rbruno.webserver.Response;
+import com.rbruno.webserver.page.Page;
 
 public class ExamplePage extends Page {
 

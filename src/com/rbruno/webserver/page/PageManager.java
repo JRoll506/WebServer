@@ -1,8 +1,8 @@
-package com.rbruno.license.manager.server.webui.page;
+package com.rbruno.webserver.page;
 
 import java.util.ArrayList;
 
-import com.rbruno.license.manager.server.webui.page.pages.ExamplePage;
+import com.rbruno.webserver.page.pages.ExamplePage;
 
 public class PageManager {
 

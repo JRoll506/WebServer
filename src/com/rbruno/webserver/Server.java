@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.webui;
+package com.rbruno.webserver;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,10 +10,10 @@ import java.net.Socket;
 
 import org.json.JSONException;
 
-import com.rbruno.license.manager.server.logger.Logger;
-import com.rbruno.license.manager.server.webui.config.Config;
-import com.rbruno.license.manager.server.webui.page.Page;
-import com.rbruno.license.manager.server.webui.page.PageManager;
+import com.rbruno.webserver.config.Config;
+import com.rbruno.webserver.logger.Logger;
+import com.rbruno.webserver.page.Page;
+import com.rbruno.webserver.page.PageManager;
 
 public class Server implements Runnable {
 

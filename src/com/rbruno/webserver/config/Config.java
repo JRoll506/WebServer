@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.webui.config;
+package com.rbruno.webserver.config;
 
 import java.io.BufferedReader;
 import java.io.File;
