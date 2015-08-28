@@ -34,19 +34,6 @@ public class Server implements Runnable {
 		run = new Thread(this, "WebServer");
 		run.start();
 		
-        Scanner scanner = new Scanner(System.in);
-		while (true) {
-			String input = scanner.next();
-			if (input.equals("reload")) {
-				Logger.log("Reloading pages!");
-				reloadPages();
-			} if (input.equals("quit")){
-				stop();
-				scanner.close();
-			}else {
-				Logger.log("Unknown command!");
-			}
-		}
 	}
 
 	public void run() {
@@ -127,6 +114,19 @@ public class Server implements Runnable {
 	public static void main(String[] args){
 		try {
 			server = new Server("config.txt");
+			Scanner scanner = new Scanner(System.in);
+			while (true) {
+				String input = scanner.next();
+				if (input.equals("reload")) {
+					Logger.log("Reloading pages!");
+					server.reloadPages();
+				} if (input.equals("quit")){
+					server.stop();
+					scanner.close();
+				}else {
+					Logger.log("Unknown command!");
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
