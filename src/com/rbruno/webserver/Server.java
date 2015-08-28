@@ -21,6 +21,7 @@ public class Server implements Runnable {
 	private int port;
 	private ServerSocket socket;
 	private Thread run;
+	private PageManager pageManager;
 	
 	private Config config;
 	
@@ -28,7 +29,8 @@ public class Server implements Runnable {
 		this.config = new Config(config);
 		this.port = this.config.getPort();
 		socket = new ServerSocket(port);
-		Logger.log("Started webUI on port: " + port);
+		this.pageManager = new PageManager();
+		Logger.log("Started Server on port: " + port);
 		
 		run = new Thread(this, "WebServer");
 		run.start();
@@ -38,9 +40,8 @@ public class Server implements Runnable {
 		while (true) {
 			try {
 				Socket clientSocket = socket.accept();
-
 				//Logger.log("Web Socket created " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
-				Thread client = new Thread(new WebClient(clientSocket, this), "WebClient");
+				Thread client = new Thread(new WebClient(clientSocket), "WebClient");
 				client.start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -49,8 +50,6 @@ public class Server implements Runnable {
 	}
 
 	public void process(Socket clientSocket, Request request) throws IOException {
-		
-		PageManager pageManager = new PageManager();
 		
 		Response response = new Response(clientSocket);
 		
@@ -78,7 +77,6 @@ public class Server implements Runnable {
 		}
 		
 		try {
-			response.setContentType(getContentType(request.getPage()));
 			response.sendFile(new File("www/" + request.getPage()));
 			return;
 		} catch (FileNotFoundException e) {
@@ -90,36 +88,6 @@ public class Server implements Runnable {
 			response.sendFile(new File("404.html"));
 			return;
 		}		
-	}
-
-	private String getContentType(String page) {
-		String extention = page;
-		if (page.contains(".")){
-			extention = page.split("\\.")[1];
-		}
-		switch (extention) {
-		//Images
-		case "jpg":
-			return "image/jpeg";
-		case "jpeg":
-			return "image/jpeg";
-		case "png":
-			return "image/png";
-		case "gif":
-			return "image/gif";
-		case "bmp":
-			return "image/bmp";
-		//video
-		case "mp4":
-			return "video/mp4";		
-		//Text
-		case "html":
-			return "text/html";
-		case "txt":
-			return "text/plain";
-		default:
-			return "text/html";
-		}
 	}
 
 	public int getPort() {
@@ -155,4 +123,14 @@ public class Server implements Runnable {
 	public static Server getServer() {
 		return server;
 	}
+	
+	public PageManager getPageManager() {
+		return pageManager;
+	}
+	
+	public void reloadPages() {
+		pageManager = new PageManager();
+	}
+			
+	
 }

@@ -2,6 +2,7 @@ package com.rbruno.webserver.config;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -21,7 +22,12 @@ public class Config {
 
 	public Config(File file) throws IOException, JSONException {
 		this.file = file;
-		read();
+		try {
+			read();
+		} catch (FileNotFoundException e) {
+			System.err.println("Config file not found");
+			throw e;
+		}
 	}
 
 	public void read() throws IOException, JSONException {

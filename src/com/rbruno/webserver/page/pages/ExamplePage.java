@@ -13,7 +13,6 @@ public class ExamplePage extends Page {
 	}
 
 	public void called(Request request, Response response) throws IOException {
-		response.setContentType("text/html");
 		response.addToBody("<h3>" + response.getSocket().getInetAddress().getHostAddress() + ":" +  response.getSocket().getPort() + "</h3>");
 		response.send();
 	}

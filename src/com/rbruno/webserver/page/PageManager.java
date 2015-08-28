@@ -10,5 +10,9 @@ public class PageManager {
 
 	public PageManager() {
 		this.pages.add(new ExamplePage());
+		
+		for (Page page : PageLoader.load("www/")){
+			this.pages.add(page);
+		}
 	}
 }

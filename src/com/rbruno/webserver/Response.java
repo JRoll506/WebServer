@@ -16,13 +16,15 @@ public class Response {
 	private String response = "HTTP/1.1 200 OK";
 	private ArrayList<String> header = new ArrayList<String>();
 	private String body = "";
-	private String contentType;
+	private String contentType = "text/html";
+	private String charset = "utf-8"; 
 
 	public Response(Socket socket) {
 		this.socket = socket;
 	}
 
 	public void sendFile(File file) throws IOException {
+		contentType = getContentType(file.getName());
 		if (!file.exists()) throw new FileNotFoundException();
 		OutputStream outputStream = socket.getOutputStream();
 		PrintWriter out = new PrintWriter(outputStream);
@@ -44,12 +46,42 @@ public class Response {
 		for (String line : header) {
 			out.println(line);
 		}
-		out.println("Content-type: " + contentType);
+		out.println("Content-type: " + contentType + ";charset=" + charset);
 		out.println("Content-length: " + body.length());
 		out.println();
 		out.print(body);
 		out.flush();
 		out.close();
+	}
+	
+	public String getContentType(String page) {
+		String extention = page;
+		if (page.contains(".")){
+			extention = page.split("\\.")[1];
+		}
+		switch (extention) {
+		//Images
+		case "jpg":
+			return "image/jpeg";
+		case "jpeg":
+			return "image/jpeg";
+		case "png":
+			return "image/png";
+		case "gif":
+			return "image/gif";
+		case "bmp":
+			return "image/bmp";
+		//video
+		case "mp4":
+			return "video/mp4";		
+		//Text
+		case "html":
+			return "text/html";
+		case "txt":
+			return "text/plain";
+		default:
+			return "text/html";
+		}
 	}
 
 	public void addToHeader(String string) {
