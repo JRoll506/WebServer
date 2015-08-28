@@ -7,8 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import org.json.JSONException;
+import java.util.Scanner;
 
 import com.rbruno.webserver.config.Config;
 import com.rbruno.webserver.logger.Logger;
@@ -25,7 +24,7 @@ public class Server implements Runnable {
 	
 	private Config config;
 	
-	public Server(String config) throws IOException, JSONException {
+	public Server(String config) throws Exception {
 		this.config = new Config(config);
 		this.port = this.config.getPort();
 		socket = new ServerSocket(port);
@@ -34,6 +33,20 @@ public class Server implements Runnable {
 		
 		run = new Thread(this, "WebServer");
 		run.start();
+		
+        Scanner scanner = new Scanner(System.in);
+		while (true) {
+			String input = scanner.next();
+			if (input.equals("reload")) {
+				Logger.log("Reloading pages!");
+				reloadPages();
+			} if (input.equals("quit")){
+				stop();
+				scanner.close();
+			}else {
+				Logger.log("Unknown command!");
+			}
+		}
 	}
 
 	public void run() {
@@ -114,9 +127,14 @@ public class Server implements Runnable {
 	public static void main(String[] args){
 		try {
 			server = new Server("config.txt");
-		} catch (IOException | JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	public void stop() throws Exception {
+		run.join();
 		
 	}
 
