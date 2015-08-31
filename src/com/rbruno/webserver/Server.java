@@ -23,6 +23,7 @@ public class Server implements Runnable {
 	private PageManager pageManager;
 	
 	private Config config;
+	private boolean running = true;
 	
 	public Server(String config) throws Exception {
 		this.config = new Config(config);
@@ -37,15 +38,16 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-		while (true) {
+		while (running ) {
 			try {
 				Socket clientSocket = socket.accept();
 				//Logger.log("Web Socket created " + clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
 				Thread client = new Thread(new WebClient(clientSocket), "WebClient");
 				client.start();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				if (e.getMessage().contains("closed")) return;
 				e.printStackTrace();
-			}
+			} 
 		}
 	}
 
@@ -123,7 +125,8 @@ public class Server implements Runnable {
 				} if (input.equals("quit")){
 					server.stop();
 					scanner.close();
-				}else {
+					return;
+				} else {
 					Logger.log("Unknown command!");
 				}
 			}
@@ -134,6 +137,8 @@ public class Server implements Runnable {
 	}
 	
 	public void stop() throws Exception {
+		running = false;
+		socket.close();
 		run.join();
 		
 	}

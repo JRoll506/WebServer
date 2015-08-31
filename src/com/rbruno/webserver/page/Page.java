@@ -1,8 +1,6 @@
 package com.rbruno.webserver.page;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,20 +21,13 @@ public class Page {
 	public void called(Request request, Response response) throws IOException {
 	}
 
-	public String read(String fileName) throws FileNotFoundException {
-		BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
-		String html = "";
-		try {
-			while (reader.ready()) {
-				String line = reader.readLine();
-				html = html + line;
-			}
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return html;
+	public String read(String fileName) throws IOException {
+		File file = new File(fileName);
+		FileReader reader = new FileReader(file);
+		char[] text = new char[(int) file.length()];
+		reader.read(text, 0, (int) file.length());
+		reader.close();
+		return new String(text);
 	}
 
 	public HashMap<String, String> phraseGet(String args) {
