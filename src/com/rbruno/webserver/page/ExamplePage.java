@@ -1,10 +1,9 @@
-package com.rbruno.webserver.page.pages;
+package com.rbruno.webserver.page;
 
 import java.io.IOException;
 
 import com.rbruno.webserver.Request;
 import com.rbruno.webserver.Response;
-import com.rbruno.webserver.page.Page;
 
 public class ExamplePage extends Page {
 

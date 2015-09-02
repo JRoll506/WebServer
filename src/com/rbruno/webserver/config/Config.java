@@ -1,13 +1,11 @@
 package com.rbruno.webserver.config;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.rbruno.webserver.logger.Logger;
 
 public class Config {
 
@@ -15,33 +13,33 @@ public class Config {
 
 	int port;
 
-	public Config(String path) throws IOException, JSONException {
+	public Config(String path) throws Exception {
 		file = new File(path);
 		read();
 	}
 
-	public Config(File file) throws IOException, JSONException {
+	public Config(File file) throws Exception {
 		this.file = file;
-		try {
-			read();
-		} catch (FileNotFoundException e) {
-			System.err.println("Config file not found");
-			throw e;
-		}
+		read();
 	}
 
-	public void read() throws IOException, JSONException {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String contents = "";
-		String line;
-		while ((line = reader.readLine()) != null) {
-			contents += line;
-		}
-		JSONObject json = new JSONObject(contents);
-
-		port = json.getInt("port");
-
+	public void read() throws Exception {
+		FileReader reader = new FileReader(file);
+		char[] block = new char[(int) file.length()];
+		reader.read(block, 0, (int) file.length());
 		reader.close();
+		JSONObject json = new JSONObject(new String(block));
+		
+		port = checkPort(json);
+		Logger.log("Loaded config successfully.");
+	}
+	
+	public int checkPort(JSONObject json) throws ConfigException {
+		int port = json.getInt("port");
+		if (port > 1 && port < 65535) {
+			throw new ConfigException("Port in config out side of range.");
+		}
+		return port;
 	}
 
 	public int getPort() {
