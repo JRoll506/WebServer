@@ -1,7 +1,7 @@
 package com.rbruno.webserver.command;
 
 import com.rbruno.webserver.Server;
-import com.rbruno.webserver.logger.Logger;
+import com.rbruno.webserver.logger.WebLogger;
 
 public class Reload extends Command {
 
@@ -11,7 +11,7 @@ public class Reload extends Command {
 	
 	@Override
 	public void called() {
-		Logger.log("Reloading pages!");
+		WebLogger.log("Reloading pages!");
 		Server.getServer().reloadPages();
 	}
 

@@ -6,10 +6,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 import com.rbruno.webserver.command.Command;
 import com.rbruno.webserver.config.Config;
-import com.rbruno.webserver.logger.Logger;
+import com.rbruno.webserver.logger.WebLogger;
 import com.rbruno.webserver.page.Page;
 
 public class Server implements Runnable {
@@ -22,11 +23,16 @@ public class Server implements Runnable {
 	private boolean running = true;
 
 	public Server(String config) throws Exception {
-		this.config = new Config(config);
+		try {
+			this.config = new Config(config);
+		} catch (Exception e) { 
+			WebLogger.log("An error has occured while reading the config", Level.SEVERE);
+			throw e;
+		}
 		Page.loadPages();
-		
+
 		socket = new ServerSocket(this.config.getPort());
-		Logger.log("Started Server on port: " + this.config.getPort());
+		WebLogger.log("Started Server on port: " + this.config.getPort());
 
 		run = new Thread(this, "WebServer");
 		run.start();
@@ -104,11 +110,12 @@ public class Server implements Runnable {
 						command.called();
 						continue;
 					}
-					Logger.log("Unknown command.");
+					WebLogger.log("Unknown command.");
 				}
 			}
 		} catch (Exception e) {
-			Logger.log(e.getMessage());
+			WebLogger.log(e.getMessage(), Level.SEVERE);
+			e.printStackTrace();
 		}
 
 	}

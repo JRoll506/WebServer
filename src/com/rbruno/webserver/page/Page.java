@@ -13,7 +13,7 @@ import java.util.List;
 import com.rbruno.webserver.Request;
 import com.rbruno.webserver.Response;
 import com.rbruno.webserver.Server;
-import com.rbruno.webserver.logger.Logger;
+import com.rbruno.webserver.logger.WebLogger;
 
 public class Page {
 
@@ -79,24 +79,24 @@ public class Page {
 				Class<?> clazz = loader.loadClass(name);
 				Object object = clazz.newInstance();
 				if (!(object instanceof Page)) {
-					Logger.log("Not a page: " + clazz.getSimpleName());
+					WebLogger.log("Not a page: " + clazz.getSimpleName());
 					continue;
 				}
 				Page page = (Page) object;
 				pages.add(page);
-				Logger.log("Loaded page: " + page.getClass().getSimpleName() + " \"" + page.getName() + "\"");
+				WebLogger.log("Loaded page: " + page.getClass().getSimpleName() + " \"" + page.getName() + "\"");
 			} catch (Exception ex) {
-				Logger.log("Error loading '" + name + "' page!");
+				WebLogger.log("Error loading '" + name + "' page!");
 				ex.printStackTrace();
 			} catch (Error ex) {
-				Logger.log("Error loading '" + name + "' page!");
+				WebLogger.log("Error loading '" + name + "' page!");
 				ex.printStackTrace();
 			}
 		}
 		try {
 			loader.close();
 		} catch (IOException e) {
-			Logger.log("Error closing class loader.");
+			WebLogger.log("Error closing class loader.");
 		}
 		return pages;
 	}

@@ -2,41 +2,46 @@ package com.rbruno.webserver.config;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Properties;
 
-import org.json.JSONObject;
-
-import com.rbruno.webserver.logger.Logger;
+import com.rbruno.webserver.logger.WebLogger;
 
 public class Config {
 
-	File file;
-
-	int port;
+	private File file;
+	private int port;
+	private Properties properties;
 
 	public Config(String path) throws Exception {
 		file = new File(path);
 		read();
+		save();
 	}
 
 	public Config(File file) throws Exception {
 		this.file = file;
 		read();
+		save();
 	}
 
 	public void read() throws Exception {
-		FileReader reader = new FileReader(file);
-		char[] block = new char[(int) file.length()];
-		reader.read(block, 0, (int) file.length());
-		reader.close();
-		JSONObject json = new JSONObject(new String(block));
+		Properties properties = new Properties();
+		properties.load(new FileReader(file));
+		this.properties = properties;
 		
-		port = checkPort(json);
-		Logger.log("Loaded config successfully.");
+		port = checkPort(properties.getProperty("port"));
+		WebLogger.log("Loaded config successfully.");
 	}
 	
-	public int checkPort(JSONObject json) throws ConfigException {
-		int port = json.getInt("port");
-		if (port > 1 && port < 65535) {
+
+	private void save() throws Exception {
+		properties.store(new FileWriter(file), "WebServer config file");
+	}
+	
+	public int checkPort(String string) throws Exception {
+		int port = Integer.parseInt(string);
+		if (port < 1 && port > 65535) {
 			throw new ConfigException("Port in config out side of range.");
 		}
 		return port;
