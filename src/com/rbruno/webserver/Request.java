@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.webui;
+package com.rbruno.webserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

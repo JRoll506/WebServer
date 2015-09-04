@@ -1,10 +1,9 @@
-package com.rbruno.license.manager.server.webui.page.pages;
+package com.rbruno.webserver.page;
 
 import java.io.IOException;
 
-import com.rbruno.license.manager.server.webui.Request;
-import com.rbruno.license.manager.server.webui.Response;
-import com.rbruno.license.manager.server.webui.page.Page;
+import com.rbruno.webserver.Request;
+import com.rbruno.webserver.Response;
 
 public class ExamplePage extends Page {
 
@@ -13,7 +12,6 @@ public class ExamplePage extends Page {
 	}
 
 	public void called(Request request, Response response) throws IOException {
-		response.setContentType("text/html");
 		response.addToBody("<h3>" + response.getSocket().getInetAddress().getHostAddress() + ":" +  response.getSocket().getPort() + "</h3>");
 		response.send();
 	}

@@ -1,4 +1,4 @@
-package com.rbruno.license.manager.server.webui;
+package com.rbruno.webserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,14 +9,11 @@ import java.util.ArrayList;
 
 public class WebClient implements Runnable {
 
-	private Server webUI;
-
 	private Socket clientSocket;
 	private BufferedReader in;
 	private PrintWriter out;
 
-	public WebClient(Socket clientSocket, Server webUI) throws IOException {
-		this.webUI = webUI;
+	public WebClient(Socket clientSocket) throws IOException {
 		this.clientSocket = clientSocket;
 		in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -55,8 +52,9 @@ public class WebClient implements Runnable {
 		if (message != null) {
 			if (message.size() > 0)
 				try {
-					webUI.process(clientSocket, request);
+					Server.getServer().process(clientSocket, request);
 				} catch (IOException e) {
+					
 				}
 		}
 
