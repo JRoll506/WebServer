@@ -5,10 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.logging.Level;
 
-import com.rbruno.webserver.command.Command;
 import com.rbruno.webserver.config.Config;
 import com.rbruno.webserver.logger.WebLogger;
 import com.rbruno.webserver.page.Page;
@@ -106,22 +104,6 @@ public class Server implements Runnable {
 	public static void main(String[] args) {
 		try {
 			server = new Server("config.txt");
-			Scanner scanner = new Scanner(System.in);
-			while (true) {
-				String input = scanner.next();
-				if (input.equals("quit")) {
-					server.stop();
-					scanner.close();
-					return;
-				}
-				for (Command command : Command.commands) {
-					if (command.getName().equalsIgnoreCase(input)) {
-						command.called();
-						continue;
-					}
-					WebLogger.log("Unknown command.");
-				}
-			}
 		} catch (Exception e) {
 			WebLogger.log(e.getMessage(), Level.SEVERE);
 			e.printStackTrace();
@@ -139,9 +121,4 @@ public class Server implements Runnable {
 	public static Server getServer() {
 		return server;
 	}
-
-	public void reloadPages() {
-		Page.loadPages();
-	}
-
 }
