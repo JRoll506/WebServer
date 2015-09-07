@@ -81,7 +81,13 @@ public class Server implements Runnable {
 		}
 
 		try {
-			response.sendFile(new File("www/" + request.getPage()));
+			File file = new File("www/" + request.getPage() + ".class");
+			if (file.exists()) {
+				Page page = Page.load(file);
+				page.called(request, response);
+			} else {
+				response.sendFile(new File("www/" + request.getPage()));
+			}
 			return;
 		} catch (FileNotFoundException e) {
 			response.setResponse("HTTP/1.1 404 UNFOUND");

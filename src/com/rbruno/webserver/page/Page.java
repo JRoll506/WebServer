@@ -23,10 +23,7 @@ public class Page {
 	public static ArrayList<Page> pages = new ArrayList<Page>();
 
 	public static void loadPages() {		
-		for (Page page : load("www/")){
-			pages.clear();
-			pages.add(page);
-		}
+		
 	}
 
 	public Page(String name) {
@@ -99,6 +96,47 @@ public class Page {
 			WebLogger.log("Error closing class loader.");
 		}
 		return pages;
+	}
+	
+	public static Page load(File file) {
+		Page page = null;
+		if (!file.exists()) {
+			return null;
+		}
+
+		URLClassLoader loader;
+		try {
+			File folder =  new File(file.getPath().substring(0, file.getPath().lastIndexOf("/")));
+			//File folder = new File("www/");
+			loader = new URLClassLoader(new URL[] { folder.toURI().toURL() }, Page.class.getClassLoader());
+		} catch (MalformedURLException ex) {
+			return null;
+		}
+		try {
+			String name = file.getName().substring(0, file.getName().lastIndexOf("."));
+			Class<?> clazz = loader.loadClass(name);
+			Object object = clazz.newInstance();
+			
+			if (!(object instanceof Page)) {
+				WebLogger.log("Not a page: " + clazz.getSimpleName());
+				try {
+					loader.close();
+				} catch (IOException e) {
+					WebLogger.log("Error closing class loader.");
+				}
+				return null;
+			}
+			page = (Page) object;
+		} catch(Exception e) {
+			WebLogger.log("Error loading '" + file.getName() + "' page!");
+			e.printStackTrace();
+		}
+		try {
+			loader.close();
+		} catch (IOException e) {
+			WebLogger.log("Error closing class loader.");
+		}
+		return page;
 	}
 
 	public Server getServer() {
