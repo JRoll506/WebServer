@@ -106,8 +106,7 @@ public class Page {
 
 		URLClassLoader loader;
 		try {
-			File folder =  new File(file.getPath().substring(0, file.getPath().lastIndexOf("/")));
-			//File folder = new File("www/");
+			File folder =  new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\")));
 			loader = new URLClassLoader(new URL[] { folder.toURI().toURL() }, Page.class.getClassLoader());
 		} catch (MalformedURLException ex) {
 			return null;
@@ -128,7 +127,7 @@ public class Page {
 			}
 			page = (Page) object;
 		} catch(Exception e) {
-			WebLogger.log("Error loading '" + file.getName() + "' page!");
+			WebLogger.log("Error loading '" + file.getName() + "'!");
 			e.printStackTrace();
 		}
 		try {

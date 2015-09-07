@@ -84,6 +84,9 @@ public class Server implements Runnable {
 			File file = new File("www/" + request.getPage() + ".class");
 			if (file.exists()) {
 				Page page = Page.load(file);
+				if (page == null) {
+					throw new FileNotFoundException();
+				}
 				page.called(request, response);
 			} else {
 				response.sendFile(new File("www/" + request.getPage()));
