@@ -21,6 +21,7 @@ public class Server implements Runnable {
 	private boolean running = true;
 
 	public Server(String config) throws Exception {
+		System.setProperty("com.rbruno.webserver.config", new File(config).getAbsolutePath());
 		try {
 			this.config = new Config(config);
 		} catch (Exception e) { 
@@ -64,6 +65,15 @@ public class Server implements Runnable {
 
 		if (request.getPage().equals("/")) {
 			try {
+				File file = new File("www/Index.class");
+				if (file.exists()) {
+					Page page = Page.load(file);
+					if (page == null) {
+						throw new FileNotFoundException();
+					}
+					page.called(request, response);
+					return;
+				}
 				response.setContentType("text/html");
 				response.sendFile(new File("www/index.html"));
 				return;
@@ -79,7 +89,7 @@ public class Server implements Runnable {
 		}
 
 		try {
-			File file = new File("www/" + request.getPage() + ".class");
+			File file = new File("www" + request.getPage() + ".class");
 			if (file.exists()) {
 				Page page = Page.load(file);
 				if (page == null) {
