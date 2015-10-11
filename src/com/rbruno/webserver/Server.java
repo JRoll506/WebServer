@@ -5,10 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.logging.Level;
 
-import com.rbruno.webserver.command.Command;
 import com.rbruno.webserver.config.Config;
 import com.rbruno.webserver.logger.WebLogger;
 import com.rbruno.webserver.page.Page;
@@ -23,6 +21,7 @@ public class Server implements Runnable {
 	private boolean running = true;
 
 	public Server(String config) throws Exception {
+		System.setProperty("com.rbruno.webserver.config", new File(config).getAbsolutePath());
 		try {
 			this.config = new Config(config);
 		} catch (Exception e) { 
@@ -66,6 +65,15 @@ public class Server implements Runnable {
 
 		if (request.getPage().equals("/")) {
 			try {
+				File file = new File("www/Index.class");
+				if (file.exists()) {
+					Page page = Page.load(file);
+					if (page == null) {
+						throw new FileNotFoundException();
+					}
+					page.called(request, response);
+					return;
+				}
 				response.setContentType("text/html");
 				response.sendFile(new File("www/index.html"));
 				return;
@@ -81,7 +89,16 @@ public class Server implements Runnable {
 		}
 
 		try {
-			response.sendFile(new File("www/" + request.getPage()));
+			File file = new File("www" + request.getPage() + ".class");
+			if (file.exists()) {
+				Page page = Page.load(file);
+				if (page == null) {
+					throw new FileNotFoundException();
+				}
+				page.called(request, response);
+			} else {
+				response.sendFile(new File("www/" + request.getPage()));
+			}
 			return;
 		} catch (FileNotFoundException e) {
 			response.setResponse("HTTP/1.1 404 UNFOUND");
@@ -97,22 +114,6 @@ public class Server implements Runnable {
 	public static void main(String[] args) {
 		try {
 			server = new Server("config.txt");
-			Scanner scanner = new Scanner(System.in);
-			while (true) {
-				String input = scanner.next();
-				if (input.equals("quit")) {
-					server.stop();
-					scanner.close();
-					return;
-				}
-				for (Command command : Command.commands) {
-					if (command.getName().equalsIgnoreCase(input)) {
-						command.called();
-						continue;
-					}
-					WebLogger.log("Unknown command.");
-				}
-			}
 		} catch (Exception e) {
 			WebLogger.log(e.getMessage(), Level.SEVERE);
 			e.printStackTrace();
@@ -130,9 +131,4 @@ public class Server implements Runnable {
 	public static Server getServer() {
 		return server;
 	}
-
-	public void reloadPages() {
-		Page.loadPages();
-	}
-
 }
