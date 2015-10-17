@@ -152,9 +152,9 @@ public class Server implements Runnable {
 	}
 
 	/**
-	 * Return this instance of the Server.
+	 * Return the instance of the Server.
 	 * 
-	 * @return This instance of the Server.
+	 * @return The instance of the Server.
 	 */
 	public static Server getServer() {
 		return server;
