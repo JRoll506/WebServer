@@ -19,6 +19,7 @@ public class Server implements Runnable {
 
 	private Config config;
 	private boolean running = true;
+	private PasswordManager passwordManager;
 
 	/**
 	 * Creates a new Server instance.
@@ -27,13 +28,13 @@ public class Server implements Runnable {
 	 * @throws Exception
 	 */
 	public Server(String config) throws Exception {
-
 		try {
 			this.config = new Config(config);
 		} catch (Exception e) {
 			WebLogger.log("An error has occured while reading the config", Level.SEVERE);
 			throw e;
 		}
+		passwordManager = new PasswordManager();
 		Page.loadPages();
 
 		socket = new ServerSocket(this.config.getPort());
@@ -168,5 +169,14 @@ public class Server implements Runnable {
 	 */
 	public Config getConfig() {
 		return config;
+	}
+
+	/**
+	 * Returns the PasswordManager.
+	 * 
+	 * @return The PasswordManager.
+	 */
+	public PasswordManager getPasswordManager() {
+		return passwordManager;
 	}
 }
