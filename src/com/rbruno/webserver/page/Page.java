@@ -25,7 +25,7 @@ public class Page {
 	 * here.
 	 */
 	public static void loadPages() {
-
+		pages.add(new Bootstrap());
 	}
 
 	/**

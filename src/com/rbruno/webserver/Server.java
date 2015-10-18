@@ -27,7 +27,7 @@ public class Server implements Runnable {
 	 * @throws Exception
 	 */
 	public Server(String config) throws Exception {
-		System.setProperty("com.rbruno.webserver.config", new File(config).getAbsolutePath());
+
 		try {
 			this.config = new Config(config);
 		} catch (Exception e) {
@@ -131,6 +131,7 @@ public class Server implements Runnable {
 
 	public static void main(String[] args) {
 		try {
+			System.setProperty("com.rbruno.webserver.config", new File("config.txt").getAbsolutePath());
 			server = new Server("config.txt");
 		} catch (Exception e) {
 			WebLogger.log(e.getMessage(), Level.SEVERE);
@@ -158,5 +159,14 @@ public class Server implements Runnable {
 	 */
 	public static Server getServer() {
 		return server;
+	}
+	
+	/**
+	 * Returns the Config.
+	 * 
+	 * @return The Config.
+	 */
+	public Config getConfig() {
+		return config;
 	}
 }
