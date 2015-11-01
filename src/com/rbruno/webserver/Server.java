@@ -19,15 +19,22 @@ public class Server implements Runnable {
 
 	private Config config;
 	private boolean running = true;
+	private PasswordManager passwordManager;
 
+	/**
+	 * Creates a new Server instance.
+	 * 
+	 * @param config The config you wish to base the server on.
+	 * @throws Exception
+	 */
 	public Server(String config) throws Exception {
-		System.setProperty("com.rbruno.webserver.config", new File(config).getAbsolutePath());
 		try {
 			this.config = new Config(config);
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			WebLogger.log("An error has occured while reading the config", Level.SEVERE);
 			throw e;
 		}
+		passwordManager = new PasswordManager();
 		Page.loadPages();
 
 		socket = new ServerSocket(this.config.getPort());
@@ -38,6 +45,10 @@ public class Server implements Runnable {
 
 	}
 
+	/**
+	 * Running on its own thread this method waits for sockets then creates a
+	 * new WebClient instances to handle it.
+	 */
 	public void run() {
 		while (running) {
 			try {
@@ -45,13 +56,21 @@ public class Server implements Runnable {
 				Thread client = new Thread(new WebClient(clientSocket), "WebClient");
 				client.start();
 			} catch (Exception e) {
-				if (!running)
-					return;
+				if (!running) return;
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Process request after it has been handles by the WebClient class. It
+	 * reads the page that is trying to be fetched then either calls the right
+	 * class or responds with the right page.
+	 * 
+	 * @param clientSocket The socket that issued the request.
+	 * @param request The Request instance that was issues by the client.
+	 * @throws IOException
+	 */
 	public void process(Socket clientSocket, Request request) throws IOException {
 
 		Response response = new Response(clientSocket);
@@ -113,6 +132,7 @@ public class Server implements Runnable {
 
 	public static void main(String[] args) {
 		try {
+			System.setProperty("com.rbruno.webserver.config", new File("config.txt").getAbsolutePath());
 			server = new Server("config.txt");
 		} catch (Exception e) {
 			WebLogger.log(e.getMessage(), Level.SEVERE);
@@ -121,6 +141,11 @@ public class Server implements Runnable {
 
 	}
 
+	/**
+	 * Attempts to stop the Server.
+	 * 
+	 * @throws Exception
+	 */
 	public void stop() throws Exception {
 		running = false;
 		socket.close();
@@ -128,7 +153,30 @@ public class Server implements Runnable {
 
 	}
 
+	/**
+	 * Return the instance of the Server.
+	 * 
+	 * @return The instance of the Server.
+	 */
 	public static Server getServer() {
 		return server;
+	}
+	
+	/**
+	 * Returns the Config.
+	 * 
+	 * @return The Config.
+	 */
+	public Config getConfig() {
+		return config;
+	}
+
+	/**
+	 * Returns the PasswordManager.
+	 * 
+	 * @return The PasswordManager.
+	 */
+	public PasswordManager getPasswordManager() {
+		return passwordManager;
 	}
 }

@@ -13,12 +13,24 @@ public class WebClient implements Runnable {
 	private BufferedReader in;
 	private PrintWriter out;
 
+	/**
+	 * Creates a new WebClient instance. This class once ran will read the
+	 * request by the client, pass it into a Request object then sends it to
+	 * Server.process().
+	 * 
+	 * @param clientSocket
+	 * @throws IOException
+	 */
 	public WebClient(Socket clientSocket) throws IOException {
 		this.clientSocket = clientSocket;
 		in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 		out = new PrintWriter(clientSocket.getOutputStream(), true);
 	}
 
+	/**
+	 * Reads the request by the client, passes it into a Request object then
+	 * sends it to Server.process().
+	 */
 	@Override
 	public void run() {
 		ArrayList<String> message = new ArrayList<String>();
@@ -50,12 +62,11 @@ public class WebClient implements Runnable {
 			return;
 		}
 		if (message != null) {
-			if (message.size() > 0)
-				try {
-					Server.getServer().process(clientSocket, request);
-				} catch (IOException e) {
-					
-				}
+			if (message.size() > 0) try {
+				Server.getServer().process(clientSocket, request);
+			} catch (IOException e) {
+
+			}
 		}
 
 		try {

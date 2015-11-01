@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Properties;
+import java.util.Random;
 
 import com.rbruno.webserver.logger.WebLogger;
 
@@ -12,6 +13,7 @@ public class Config {
 	private File file;
 	private int port;
 	private Properties properties;
+	private int key;
 
 	public Config(String path) throws Exception {
 		file = new File(path);
@@ -31,6 +33,9 @@ public class Config {
 		this.properties = properties;
 		
 		port = checkPort(properties.getProperty("port"));
+		Random random = new Random();
+		key = random.nextInt(Integer.MAX_VALUE);
+		properties.setProperty("key", key + "");
 		WebLogger.log("Loaded config successfully.");
 	}
 	
@@ -49,6 +54,10 @@ public class Config {
 
 	public int getPort() {
 		return port;
+	}
+
+	public int getKey() {
+		return key;
 	}
 
 }

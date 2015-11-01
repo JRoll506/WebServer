@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.rbruno.webserver.Request;
@@ -18,21 +17,43 @@ import com.rbruno.webserver.logger.WebLogger;
 public class Page {
 
 	private String name;
-	private String file;
-	
+
 	public static ArrayList<Page> pages = new ArrayList<Page>();
 
-	public static void loadPages() {		
-		
+	/**
+	 * Pages can be built into the jar by adding them to the pages ArrayList
+	 * here.
+	 */
+	public static void loadPages() {
+		pages.add(new Bootstrap());
 	}
 
+	/**
+	 * Creates a new Page instance.
+	 * 
+	 * @param name The URL the page can be found at. Should start with a /.
+	 */
 	public Page(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * This method is called every time the page is called by a client.
+	 * 
+	 * @param request The clients request.
+	 * @param response An response to be filled out by this method.
+	 * @throws IOException
+	 */
 	public void called(Request request, Response response) throws IOException {
 	}
 
+	/**
+	 * Reads a file and returns it's contents as a string.
+	 * 
+	 * @param fileName The files path.
+	 * @return The files contents.
+	 * @throws IOException
+	 */
 	public String read(String fileName) throws IOException {
 		File file = new File(fileName);
 		FileReader reader = new FileReader(file);
@@ -42,16 +63,14 @@ public class Page {
 		return new String(text);
 	}
 
-	public HashMap<String, String> phraseGet(String args) {
-		HashMap<String, String> map = new HashMap<String, String>();
-		for (String string : args.split("\\&")) {
-			if (string.split("\\=").length >=2){
-				map.put(string.split("\\=")[0], string.split("\\=")[1]);
-			}
-		}
-		return map;
-	}
-	
+	/**
+	 * Loads all the classes in a directory that extend
+	 * com.rbruno.webserver.Page then returns them in a List.
+	 * 
+	 * @param directory The directory in which to look for classes.
+	 * @return A list of all the classes that extend com.rbruno.webserver.Page
+	 *         in the specified directory.
+	 */
 	public static List<Page> load(String directory) {
 		List<Page> pages = new ArrayList<Page>();
 		File dir = new File(directory);
@@ -97,7 +116,14 @@ public class Page {
 		}
 		return pages;
 	}
-	
+
+	/**
+	 * Loads a the class that extends com.rbruno.webserver.Page at the location
+	 * specified.
+	 * 
+	 * @param file The location where the Page is.
+	 * @return An instance of the Page.
+	 */
 	public static Page load(File file) {
 		Page page = null;
 		if (!file.exists()) {
@@ -106,7 +132,7 @@ public class Page {
 
 		URLClassLoader loader;
 		try {
-			File folder =  new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\")));
+			File folder = new File(file.getPath().substring(0, file.getPath().lastIndexOf("\\")));
 			loader = new URLClassLoader(new URL[] { folder.toURI().toURL() }, Page.class.getClassLoader());
 		} catch (MalformedURLException ex) {
 			return null;
@@ -115,7 +141,7 @@ public class Page {
 			String name = file.getName().substring(0, file.getName().lastIndexOf("."));
 			Class<?> clazz = loader.loadClass(name);
 			Object object = clazz.newInstance();
-			
+
 			if (!(object instanceof Page)) {
 				WebLogger.log("Not a page: " + clazz.getSimpleName());
 				try {
@@ -126,7 +152,7 @@ public class Page {
 				return null;
 			}
 			page = (Page) object;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			WebLogger.log("Error loading '" + file.getName() + "'!");
 			e.printStackTrace();
 		}
@@ -138,16 +164,22 @@ public class Page {
 		return page;
 	}
 
+	/**
+	 * Returns an instance of the Server.
+	 * 
+	 * @return An instance of the Server.
+	 */
 	public Server getServer() {
 		return Server.getServer();
 	}
 
+	/**
+	 * Returns the name of the page.
+	 * 
+	 * @return The name of the page.
+	 */
 	public String getName() {
 		return name;
-	}
-
-	public String getFile() {
-		return file;
 	}
 
 }
