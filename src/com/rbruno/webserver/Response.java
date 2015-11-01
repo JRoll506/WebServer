@@ -46,6 +46,7 @@ public class Response {
 		out.println("Content-type: " + contentType);
 		out.println("Content-length: " + file.length());
 		out.println();
+		out.flush();
 		Files.copy(file.toPath(), outputStream);
 		outputStream.flush();
 		outputStream.close();
